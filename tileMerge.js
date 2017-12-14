@@ -1,9 +1,10 @@
 const sharp = require('sharp'),
       fs = require('fs'),
-      readLine = require('readline');
+      readLine = require('readline'),
+      path = require("filepath");;
 
-var path1 = 'f1/1668.png';
-var path2 = 'f2/1668_.png';
+var path1 = 'tiles/f1/1668.png';
+var path2 = 'tiles/f2/1668.png';
 
 const readline = require('readline');
 const rl = readline.createInterface({
@@ -32,7 +33,7 @@ rl.on('line', (line) => {
       readDir();
       break;
     case 'clear':
-      readline.clearScreenDown();
+      clearScreen();
       break;
     case 'exit':
       console.log('Have a nice Day!');
@@ -47,13 +48,12 @@ rl.on('line', (line) => {
   process.exit(0);
 });
 
-
 function readDir(pathTest) {
   fs.readdir(pathTest, (err, files) => {
     if (files != null) {
       var countFile = 0;
       files.forEach(file => {
-        console.log(file);
+        console.log(getPAth(file));
         countFile ++;
       });
       console.log(countFile);
@@ -83,4 +83,12 @@ function overlay(path1, path2) {
       rl.prompt();
     }
   });
+}
+
+function getPAth(fileName) {
+  return(path.create(fileName).toString());
+}
+
+function clearScreen() {
+  console.log('\033[2J');
 }
