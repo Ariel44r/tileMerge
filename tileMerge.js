@@ -9,7 +9,7 @@ const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  prompt: 'Armit_merge>> '
+  prompt: 'tileMerge > '
 });
 
 rl.prompt();
@@ -60,6 +60,7 @@ function readDir(pathTest) {
       rl.prompt();
     } else {
       console.log(err);
+      rl.prompt();
     }
   });
 }
