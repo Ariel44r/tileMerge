@@ -17,7 +17,7 @@ rl.prompt();
 rl.on('line', (line) => {
   switch (line.trim()) {
     case 'sqlite':
-      sqlite.query();
+      sqliteF();
       break;
     case 'path':
       rl.question('Please enter the root path: ', (rootPath) => {
@@ -49,4 +49,11 @@ rl.on('line', (line) => {
 
 function clearScreen() {
   console.clear();
+}
+
+function sqliteF() {
+  sqlite.query((resp) => {
+    console.log(resp);
+    rl.prompt();
+  });
 }
