@@ -1,24 +1,21 @@
 const readLine = require('readline'),
       readDir = require('./readDir.js'),
       overlay = require('./overlay.js'),
-      path = require('./path.js');
+      path = require('./path.js'),
+      rl = readLine.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+        prompt: 'tileMerge > '
+      });
 
 var path1 = '/home/ariel/Documents/Development/WebDev/tiles/tiles1/0/1669.png';
 var path2 = '/home/ariel/Documents/Development/WebDev/tiles/tiles2/0/1669.png';
-
-const rl = readLine.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  prompt: 'tileMerge > '
-});
 
 rl.prompt();
 
 rl.on('line', (line) => {
   switch (line.trim()) {
-    case 'merge':
-      console.log('merging images!');
-      overlay.overlay(path1, path2);
+    case 'mongo':
       break;
     case 'path':
       rl.question('Please enter the root path: ', (rootPath) => {
@@ -27,6 +24,10 @@ rl.on('line', (line) => {
         readDir.readDir(rootPath);
         rl.prompt();
       });
+      break;
+    case 'merge':
+      console.log('merging images!');
+      overlay.overlay(path1, path2);
       break;
     case 'clear':
       clearScreen();
