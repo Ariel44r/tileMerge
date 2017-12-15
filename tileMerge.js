@@ -2,6 +2,7 @@ const readLine = require('readline'),
       readDir = require('./readDir.js'),
       overlay = require('./overlay.js'),
       path = require('./path.js'),
+      sqlite = require('./sqlite.js'),
       rl = readLine.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -15,7 +16,8 @@ rl.prompt();
 
 rl.on('line', (line) => {
   switch (line.trim()) {
-    case 'mongo':
+    case 'sqlite':
+      sqlite.query();
       break;
     case 'path':
       rl.question('Please enter the root path: ', (rootPath) => {
