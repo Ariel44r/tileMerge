@@ -1,15 +1,12 @@
-const sharp = require('sharp'),
-      fs = require('fs'),
-      readLine = require('readline'),
-      path = require('path');;
+const readLine = require('readline'),
+      readDir = require('./readDir.js'),
+      overlay = require('./overlay.js'),
+      path = require('./path.js');
 
-var path1 = 'tiles/f1/1668.png';
-var path2 = 'tiles/f2/1668.png';
-var mainPath,
-    tempPath;
+var path1 = '/home/ariel/Documents/Development/WebDev/tiles/tiles1/0/1669.png';
+var path2 = '/home/ariel/Documents/Development/WebDev/tiles/tiles2/0/1669.png';
 
-const readline = require('readline');
-const rl = readline.createInterface({
+const rl = readLine.createInterface({
   input: process.stdin,
   output: process.stdout,
   prompt: 'tileMerge > '
@@ -21,15 +18,13 @@ rl.on('line', (line) => {
   switch (line.trim()) {
     case 'merge':
       console.log('merging images!');
-      overlay(path1, path2);
+      overlay.overlay(path1, path2);
       break;
     case 'path':
       rl.question('Please enter the root path: ', (rootPath) => {
-        console.log(`Starting find in the '${rootPath}' path.`);
-        //call method to start find with rootPath
-        mainPath = rootPath;
-        tempPath = rootPath;
-        readDir(rootPath);
+        clearScreen();
+        path.mainPath(rootPath);
+        readDir.readDir(rootPath);
         rl.prompt();
       });
       break;
@@ -48,42 +43,6 @@ rl.on('line', (line) => {
   console.log('Have a great day!');
   process.exit(0);
 });
-
-function readDir(pathTest) {
-  fs.readdir(pathTest, (err, files) => {
-    if (files != null){
-      console.log(files);
-      rl.prompt();
-    } else {
-      console.log(err);
-      rl.prompt();
-    }
-  });
-}
-
-function overlay(path1, path2) {
-  fs.exists(path1, (exists) => {
-    if (exists == true) {
-      fs.exists(path2, (exists) => {
-          if (exists == true) {
-            sharp(path1)
-            .overlayWith(path2, { gravity: sharp.gravity.southeast } )
-            .toFile('output2.png')
-          } else {
-            console.log(`File '${path2}' not exists`);
-            rl.prompt();
-          }
-      });
-    } else {
-      console.log(`File '${path1}' not exists`);
-      rl.prompt();
-    }
-  });
-}
-
-function getPath(fileName) {
-  return(tempPath + '/' + path.basename(fileName));
-}
 
 function clearScreen() {
   console.clear();
