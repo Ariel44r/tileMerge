@@ -5,7 +5,8 @@ const sharp = require('sharp'),
 
 var path1 = 'tiles/f1/1668.png';
 var path2 = 'tiles/f2/1668.png';
-var mainPath;
+var mainPath,
+    tempPath;
 
 const readline = require('readline');
 const rl = readline.createInterface({
@@ -22,17 +23,15 @@ rl.on('line', (line) => {
       console.log('merging images!');
       overlay(path1, path2);
       break;
-    case 'Path':
+    case 'path':
       rl.question('Please enter the root path: ', (rootPath) => {
         console.log(`Starting find in the '${rootPath}' path.`);
         //call method to start find with rootPath
         mainPath = rootPath;
+        tempPath = rootPath;
         readDir(rootPath);
         rl.prompt();
       });
-      break;
-    case 'readdir':
-      readDir();
       break;
     case 'clear':
       clearScreen();
@@ -52,10 +51,8 @@ rl.on('line', (line) => {
 
 function readDir(pathTest) {
   fs.readdir(pathTest, (err, files) => {
-    if (files != null) {
-      files.forEach(file => {
-        console.log(getPath(file));
-      });
+    if (files != null){
+      console.log(files);
       rl.prompt();
     } else {
       console.log(err);
@@ -85,9 +82,9 @@ function overlay(path1, path2) {
 }
 
 function getPath(fileName) {
-  return(mainPath + path.basename(fileName));
+  return(tempPath + '/' + path.basename(fileName));
 }
 
 function clearScreen() {
-  console.log('\033[2J');
+  console.clear();
 }
