@@ -1,10 +1,11 @@
 const sharp = require('sharp'),
       fs = require('fs'),
       readLine = require('readline'),
-      path = require("filepath");;
+      path = require('path');;
 
 var path1 = 'tiles/f1/1668.png';
 var path2 = 'tiles/f2/1668.png';
+var mainPath;
 
 const readline = require('readline');
 const rl = readline.createInterface({
@@ -25,6 +26,7 @@ rl.on('line', (line) => {
       rl.question('Please enter the root path: ', (rootPath) => {
         console.log(`Starting find in the '${rootPath}' path.`);
         //call method to start find with rootPath
+        mainPath = rootPath;
         readDir(rootPath);
         rl.prompt();
       });
@@ -51,12 +53,9 @@ rl.on('line', (line) => {
 function readDir(pathTest) {
   fs.readdir(pathTest, (err, files) => {
     if (files != null) {
-      var countFile = 0;
       files.forEach(file => {
-        console.log(getPAth(file));
-        countFile ++;
+        console.log(getPath(file));
       });
-      console.log(countFile);
       rl.prompt();
     } else {
       console.log(err);
@@ -85,8 +84,8 @@ function overlay(path1, path2) {
   });
 }
 
-function getPAth(fileName) {
-  return(path.create(fileName).toString());
+function getPath(fileName) {
+  return(mainPath + path.basename(fileName));
 }
 
 function clearScreen() {
