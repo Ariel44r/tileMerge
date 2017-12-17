@@ -56,4 +56,8 @@ function sqliteF() {
     console.log(resp);
     rl.prompt();
   });
+  sqlite.randomStringVal((rndmVal) => {
+    console.log(rndmVal);
+    rl.prompt();
+  });
 }
