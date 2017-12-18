@@ -1,7 +1,6 @@
 const readLine = require('readline'),
       readDir = require('./readDir.js'),
       overlay = require('./overlay.js'),
-      path = require('./path.js'),
       sqlite = require('./sqlite.js'),
       rl = readLine.createInterface({
         input: process.stdin,
@@ -20,12 +19,7 @@ rl.on('line', (line) => {
       sqliteF();
       break;
     case 'path':
-      rl.question('Please enter the root path: ', (rootPath) => {
-        clearScreen();
-        path.mainPath(rootPath);
-        readDir.readDir(rootPath);
-        rl.prompt();
-      });
+      pathF();
       break;
     case 'merge':
       console.log('merging images!');
@@ -47,17 +41,22 @@ rl.on('line', (line) => {
   process.exit(0);
 });
 
-function clearScreen() {
-  console.clear();
-}
-
 function sqliteF() {
+  sqlite.createDBandTable();  
   sqlite.query((resp) => {
     console.log(resp);
     rl.prompt();
   });
-  sqlite.randomStringVal((rndmVal) => {
-    console.log(rndmVal);
+}
+
+function pathF() {
+  rl.question('Please enter the root path: ', (rootPath) => {
+    clearScreen();
+    readDir.readDir(rootPath);
     rl.prompt();
   });
+}
+
+function clearScreen() {
+  console.clear();
 }

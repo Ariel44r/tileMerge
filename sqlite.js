@@ -1,19 +1,38 @@
 var sqlite3 = require('sqlite3').verbose(),
-     db = new sqlite3.Database('./database.db'),
+    db = new sqlite3.Database('./database.db'),
+    path = require('./path.js'),
+    fs = require('fs'),
     randomString = require('randomstring'); 
+
+exports.createDBandTable = function(){
+    const dbPath = '/home/ariel/Documents/Development/WebDev/TILEMERGE/tileMerge/database.db';
+    if(fs.existsSync(dbPath)) {
+      console.log('database.db was created before');
+    } else {
+      fs.openSync(dbPath, 'w');
+      console.log('database.db is being created');
+    }
+    const createTableSQL = 'CREATE TABLE IF NOT EXISTS pathTiles (root_dir varchar(255) NOT NULL,lote varchar(255),cuadrant varchar(255),level_zoom varchar(255),dir_1 varchar(255),file_name varchar(255),repeat integer,repeat_flag integer);'
+    db.run(createTableSQL);
+}
+
+exports.insertRecord = function(fullPathObj){
+    const insertRecordQ = `insert into pathTiles values('${fullPathObj.root_dir}','${fullPathObj.lote}','${fullPathObj.cuadrant}','${fullPathObj.level_zoom}','${fullPathObj.dir1}','${fullPathObj.fileName}',0,0);`;
+    db.run(insertRecordQ);
+}
 
 exports.query = function(callback){
     //Perform SELECT Operation
-    db.all("SELECT * from paths", function(err,rows){
+    var query = 'select * from pathTiles';
+    db.all(query, function(err,rows){
         //rows contain values while errors, well you can figure out.
         callback(rows);
     });
 }
 
-
 exports.randomStringVal = function(callback) {
     callback(randomString.generate({
-        length: '8',
+        length: '16',
         charset: 'numeric'
     }));
 }
