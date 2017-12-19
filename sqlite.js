@@ -18,7 +18,9 @@ exports.createDBandTable = function(){
 
 exports.insertRecord = function(fullPathObj){
     const insertRecordQ = `insert into pathTiles values('${fullPathObj.root_dir}','${fullPathObj.lote}','${fullPathObj.cuadrant}','${fullPathObj.level_zoom}','${fullPathObj.dir1}','${fullPathObj.fileName}',0,0);`;
-    db.run(insertRecordQ);
+    db.run(insertRecordQ, (err, resp) => {
+        console.log(`insertRecord ${fullPathObj.root_dir}/${fullPathObj.lote}/${fullPathObj.cuadrant}/${fullPathObj.level_zoom}/${fullPathObj.dir1}/${fullPathObj.fileName}`);
+    });
 }
 
 exports.query = function(callback){
