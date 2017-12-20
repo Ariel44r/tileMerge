@@ -2,7 +2,8 @@ var sqlite3 = require('sqlite3').verbose(),
     db = new sqlite3.Database('./database.db'),
     path = require('./path.js'),
     fs = require('fs'),
-    randomString = require('randomstring'); 
+    randomString = require('randomstring'),
+    rl = require('./readLine.js'); 
 
 exports.createDBandTable = function(){
     const dbPath = '/home/ariel/Documents/Development/WebDev/TILEMERGE/tileMerge/database.db';
@@ -16,10 +17,21 @@ exports.createDBandTable = function(){
     db.run(createTableSQL);
 }
 
+<<<<<<< HEAD
 exports.insertRecord = function(fullPathObj){
     const insertRecordQ = `insert into pathTiles values('${fullPathObj.root_dir}','${fullPathObj.lote}','${fullPathObj.cuadrant}','${fullPathObj.level_zoom}','${fullPathObj.dir1}','${fullPathObj.fileName}',0,0);`;
     db.run(insertRecordQ, (err, resp) => {
         console.log(`insertRecord ${fullPathObj.root_dir}/${fullPathObj.lote}/${fullPathObj.cuadrant}/${fullPathObj.level_zoom}/${fullPathObj.dir1}/${fullPathObj.fileName}`);
+=======
+exports.insertRecord = function(jsonArray){
+    buildSQLinsert(jsonArray, (sqlInsertQ) => {
+        //console.log(sqlInsertQ);
+        //db.run(sqlInsertQ);  //synchronous form
+        db.run(sqlInsertQ, (err, resp) => {         //asynch form
+            console.log('insert all records success');
+            rl.prompt();
+        });      
+>>>>>>> SQLite2
     });
 }
 
@@ -39,6 +51,7 @@ exports.randomStringVal = function(callback) {
     }));
 }
 
+<<<<<<< HEAD
 function buildSQL(jsonArray){
     var sql = `insert into pathTiles values(`;
     var counter = 0;
@@ -50,6 +63,19 @@ function buildSQL(jsonArray){
             return sql;
         } else{
             sqlite = sql + `('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}'),`;            
+=======
+function buildSQLinsert(jsonArray_, callback){
+    var sql = `insert into pathTiles values`;
+    var counter = 0;
+    jsonArray_.forEach(element => {
+        counter++;
+        if (counter == jsonArray_.length){
+            sql = sql +`('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}',0,0);`;
+            //console.log(sql);
+            callback(sql);
+        } else{
+            sql = sql + `('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}',0,0),`;            
+>>>>>>> SQLite2
         }
     });
 }

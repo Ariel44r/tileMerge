@@ -8,8 +8,8 @@ const readLine = require('readline'),
         prompt: 'tileMerge > '
       });
 
-var path1 = '/home/ariel/Documents/Development/WebDev/tiles/tiles1/0/1669.png';
-var path2 = '/home/ariel/Documents/Development/WebDev/tiles/tiles2/0/1669.png';
+var path1 = '/home/ariel/Documents/Development/WebDev/TILEMERGE/tileMerge/tiles/tiles1/0/1669.png';
+var path2 = '/home/ariel/Documents/Development/WebDev/TILEMERGE/tileMerge/tiles/tiles2/0/1669.png';
 
 rl.prompt();
 
@@ -22,8 +22,7 @@ rl.on('line', (line) => {
       pathF();
       break;
     case 'merge':
-      console.log('merging images!');
-      overlay.overlay(path1, path2);
+      overlayF();
       break;
     case 'clear':
       clearScreen();
@@ -50,7 +49,7 @@ function sqliteF() {
 }
 
 function pathF() {
-  rl.question('Please enter the root path: ', (rootPath) => {
+  rl.question('Please enter the root directory path: ', (rootPath) => {
     clearScreen();
     readDir.readDir(rootPath);
     rl.prompt();
@@ -59,4 +58,9 @@ function pathF() {
 
 function clearScreen() {
   console.clear();
+}
+
+function overlayF() {
+  console.log('merging images!');
+  overlay.overlay(path1, path2);
 }
