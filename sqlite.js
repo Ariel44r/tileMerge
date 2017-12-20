@@ -38,3 +38,18 @@ exports.randomStringVal = function(callback) {
         charset: 'numeric'
     }));
 }
+
+function buildSQL(jsonArray){
+    var sql = `insert into pathTiles values(`;
+    var counter = 0;
+    var sqlite = ``;
+    jsonArray.forEach(element => {
+        counter++;
+        if (counter == jsonArray.length){
+            sql = sql +`('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}'));`;
+            return sql;
+        } else{
+            sqlite = sql + `('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}'),`;            
+        }
+    });
+}

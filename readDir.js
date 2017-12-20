@@ -68,6 +68,7 @@ function readPathDir(pathToRead,callback){
 }
 
 exports.readDir = function(pathDir) {
+  var jsonArray = [];
   path.mainPath(pathDir);//root_dir
   var lotes = readPathDirSync(pathDir);
   for(var i=0;i<lotes.length;i++){
@@ -96,7 +97,7 @@ exports.readDir = function(pathDir) {
                       fileName: pngs[m]
                     }
                     //call SQLite method
-                    sqlite.insertRecord(fullPathObj);
+                    jsonArray.push(fullPathObj);
                   }
                 }                  
               }
@@ -106,6 +107,7 @@ exports.readDir = function(pathDir) {
       }
     }
   }
+  sqlite.insertRecord(jsonArray);  
 }
 
 function readPathDirSync(pathToRead){
