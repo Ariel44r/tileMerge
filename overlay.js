@@ -1,12 +1,6 @@
 const sharp = require('sharp'),
       fs = require('fs'),
-      readLine = require('readline');
-
-const rl = readLine.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  prompt: 'tileMerge > '
-});
+      rl = require('./readLine.js');
 
 exports.overlay = function(path1, path2) {
     fs.exists(path1, (exists) => {

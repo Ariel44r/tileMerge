@@ -1,12 +1,7 @@
 const fs = require('fs'),
       path = require('./path.js'),
       sqlite = require('./sqlite.js'),
-      readLine = require('readline'),
-      rl = readLine.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-        prompt: 'tileMerge > '
-      });
+      rl = require('./readLine.js');
 
 /*exports.readDir = function(pathDir) {
   path.mainPath(pathDir);//root_dir
@@ -68,6 +63,7 @@ function readPathDir(pathToRead,callback){
 }
 
 exports.readDir = function(pathDir) {
+  var jsonArray = [];                                                    
   path.mainPath(pathDir);//root_dir
   var lotes = readPathDirSync(pathDir);
   for(var i=0;i<lotes.length;i++){
@@ -83,7 +79,6 @@ exports.readDir = function(pathDir) {
             if((fs.lstatSync(pathToLevel_Zoom).isDirectory()) && (levels_zoom[k].charAt(0) != '.')){
               var dirs_1 = readPathDirSync(pathToLevel_Zoom);
               for(var l=0;l<dirs_1.length;l++){
-                var jsonArray = [];                                      
                 var pathToDir_1 = pathToLevel_Zoom + '/' + dirs_1[l];//dir_1
                 if((fs.lstatSync(pathToLevel_Zoom).isDirectory()) && (dirs_1[l].charAt(0) != '.')){
                   var pngs = readPathDirSync(pathToDir_1);
@@ -102,7 +97,6 @@ exports.readDir = function(pathDir) {
                     jsonArray.push(fullPathObj);
                   }
                 } 
-                sqlite.insertRecord(jsonArray);                                            
               }
             }
           }
@@ -110,6 +104,7 @@ exports.readDir = function(pathDir) {
       }
     }
   }
+  sqlite.insertRecord(jsonArray);                                                          
 }
 
 function readPathDirSync(pathToRead){
