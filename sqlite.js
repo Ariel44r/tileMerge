@@ -18,7 +18,9 @@ exports.createDBandTable = function(){
 
 exports.insertRecord = function(fullPathObj){
     const insertRecordQ = `insert into pathTiles values('${fullPathObj.root_dir}','${fullPathObj.lote}','${fullPathObj.cuadrant}','${fullPathObj.level_zoom}','${fullPathObj.dir1}','${fullPathObj.fileName}',0,0);`;
-    db.run(insertRecordQ);
+    db.run(insertRecordQ, (err, resp) => {
+        console.log(`insertRecord ${fullPathObj.root_dir}/${fullPathObj.lote}/${fullPathObj.cuadrant}/${fullPathObj.level_zoom}/${fullPathObj.dir1}/${fullPathObj.fileName}`);
+    });
 }
 
 exports.query = function(callback){
@@ -35,4 +37,19 @@ exports.randomStringVal = function(callback) {
         length: '16',
         charset: 'numeric'
     }));
+}
+
+function buildSQL(jsonArray){
+    var sql = `insert into pathTiles values(`;
+    var counter = 0;
+    var sqlite = ``;
+    jsonArray.forEach(element => {
+        counter++;
+        if (counter == jsonArray.length){
+            sql = sql +`('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}'));`;
+            return sql;
+        } else{
+            sqlite = sql + `('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}'),`;            
+        }
+    });
 }
