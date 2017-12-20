@@ -16,11 +16,15 @@ exports.createDBandTable = function(){
     db.run(createTableSQL);
 }
 
-exports.insertRecord = function(fullPathObj){
-    const insertRecordQ = `insert into pathTiles values('${fullPathObj.root_dir}','${fullPathObj.lote}','${fullPathObj.cuadrant}','${fullPathObj.level_zoom}','${fullPathObj.dir1}','${fullPathObj.fileName}',0,0);`;
-    db.run(insertRecordQ, (err, resp) => {
-        console.log(`insertRecord ${fullPathObj.root_dir}/${fullPathObj.lote}/${fullPathObj.cuadrant}/${fullPathObj.level_zoom}/${fullPathObj.dir1}/${fullPathObj.fileName}`);
+exports.insertRecord = function(jsonArray){
+    buildSQL(jsonArray, (sqlInsertQ) => {
+        console.log(sqlInsertQ);
+        db.run(sqlInsertQ);        
     });
+    //const insertRecordQ = `insert into pathTiles values('${fullPathObj.root_dir}','${fullPathObj.lote}','${fullPathObj.cuadrant}','${fullPathObj.level_zoom}','${fullPathObj.dir1}','${fullPathObj.fileName}',0,0);`;
+    /*db.run(insertRecordQ, (err, resp) => {
+        console.log(`insertRecord ${fullPathObj.root_dir}/${fullPathObj.lote}/${fullPathObj.cuadrant}/${fullPathObj.level_zoom}/${fullPathObj.dir1}/${fullPathObj.fileName}`);
+    });*/
 }
 
 exports.query = function(callback){
@@ -39,17 +43,17 @@ exports.randomStringVal = function(callback) {
     }));
 }
 
-function buildSQL(jsonArray){
-    var sql = `insert into pathTiles values(`;
+function buildSQL(jsonArray_, callback){
+    var sql = `insert into pathTiles values`;
     var counter = 0;
-    var sqlite = ``;
-    jsonArray.forEach(element => {
+    jsonArray_.forEach(element => {
         counter++;
-        if (counter == jsonArray.length){
-            sql = sql +`('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}'));`;
-            return sql;
+        if (counter == jsonArray_.length){
+            sql = sql +`('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}',0,0);`;
+            //console.log(sql);
+            callback(sql);
         } else{
-            sqlite = sql + `('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}'),`;            
+            sql = sql + `('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}',0,0),`;            
         }
     });
 }

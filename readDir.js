@@ -68,7 +68,6 @@ function readPathDir(pathToRead,callback){
 }
 
 exports.readDir = function(pathDir) {
-  var jsonArray = [];
   path.mainPath(pathDir);//root_dir
   var lotes = readPathDirSync(pathDir);
   for(var i=0;i<lotes.length;i++){
@@ -84,6 +83,7 @@ exports.readDir = function(pathDir) {
             if((fs.lstatSync(pathToLevel_Zoom).isDirectory()) && (levels_zoom[k].charAt(0) != '.')){
               var dirs_1 = readPathDirSync(pathToLevel_Zoom);
               for(var l=0;l<dirs_1.length;l++){
+                var jsonArray = [];                                      
                 var pathToDir_1 = pathToLevel_Zoom + '/' + dirs_1[l];//dir_1
                 if((fs.lstatSync(pathToLevel_Zoom).isDirectory()) && (dirs_1[l].charAt(0) != '.')){
                   var pngs = readPathDirSync(pathToDir_1);
@@ -93,13 +93,16 @@ exports.readDir = function(pathDir) {
                       lote: path.basename(pathToLote),
                       cuadrant: path.basename(pathToCuadrant),
                       level_zoom: path.basename(pathToLevel_Zoom),
-                      dir1: path.basename(pathToDir_1),
-                      fileName: pngs[m]
+                      dir_1: path.basename(pathToDir_1),
+                      file_name: pngs[m],
+                      repeat: 0,
+                      repeat_flag: 0
                     }
                     //call SQLite method
                     jsonArray.push(fullPathObj);
                   }
-                }                  
+                } 
+                sqlite.insertRecord(jsonArray);                                            
               }
             }
           }
@@ -107,7 +110,6 @@ exports.readDir = function(pathDir) {
       }
     }
   }
-  sqlite.insertRecord(jsonArray);  
 }
 
 function readPathDirSync(pathToRead){
