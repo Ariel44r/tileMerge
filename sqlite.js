@@ -6,7 +6,8 @@ var sqlite3 = require('sqlite3').verbose(),
     rl = require('./readLine.js'); 
 
 exports.createDBandTable = function(){
-    const dbPath = '/home/ariel/Documents/Development/WebDev/TILEMERGE/tileMerge/database.db';
+    const dbPath = path.getPath('') + '/database.db';
+    console.log(dbPath);
     if(fs.existsSync(dbPath)) {
       console.log('database.db was created before');
     } else {
