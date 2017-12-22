@@ -1,3 +1,5 @@
+import { getPath } from './path';
+
 const readLine = require('readline'),
       readDir = require('./readDir.js'),
       overlay = require('./overlay.js'),
@@ -8,8 +10,8 @@ const readLine = require('readline'),
         prompt: 'tileMerge > '
       });
 
-var path1 = '/home/ariel/Documents/Development/WebDev/TILEMERGE/tileMerge/tiles/tiles1/0/1669.png';
-var path2 = '/home/ariel/Documents/Development/WebDev/TILEMERGE/tileMerge/tiles/tiles2/0/1669.png';
+var path1 = getpath('tiles') + '/tiles1/0/1669.png';
+var path2 = getPath('tiles') + '/tiles2/0/1669.png';
 
 rl.prompt();
 
