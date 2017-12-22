@@ -8,8 +8,7 @@ exports.mainPath = function(_mainPath) {
 }
 
 exports.getPath = function(fileName) {
-    tmpPath = tmpPath + path.basename(fileName);
-    return(tmpPath);
+    return(path.resolve(fileName));
 }
 
 exports.getMainPath = function() {
