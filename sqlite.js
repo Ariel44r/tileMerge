@@ -33,7 +33,7 @@ exports.query = function(callback){
     var query = 'select * from pathTiles';
     db.all(query, function(err,rows){
         //rows contain values while errors, well you can figure out.
-        callback(rows);
+        callback(rows[1000 - 1]);
     });
 }
 
@@ -54,7 +54,38 @@ function buildSQLinsert(jsonArray_, callback){
             //console.log(sql);
             callback(sql);
         } else{
-            sql = sql + `('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}',0,0),`;            
+            sql = sql + `('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}',0,0),`;
         }
+    });
+}
+
+exports.selectRepeatRows = function(queryRepeatRows){
+    db.all(queryRepeatRows, (err, rows) => {
+        if (err) {
+            throw err;
+        } else {
+            var countID = 0;
+            rows.forEach(row => {
+                for(var i=0;i<rows.length;i++){
+                    if(row != rows[i]){
+                        if(row.file_name == rows[i].file_name){
+                            console.log(row.file_name + ' = ' + rows[i].file_name);
+                            console.log(row.cuadrant + ' = ' + rows[i].cuadrant);
+                            var queryUpdate = `update pathTiles set repeat_flag=1 where rowid=${row.rowid} or rowid=${rows[i].rowid}`;
+                            updateRecordSQL(queryUpdate);
+                            var queryUpdateIDRepeat = `update pathTiles set repeat=${countID} where rowid=${row.rowid} or rowid=${rows[i].rowid}`;
+                            updateRecordSQL(queryUpdateIDRepeat);
+                            countID++;
+                        }
+                    }
+                }
+            });
+        }
+    });
+}
+
+function updateRecordSQL(sqlUpdateQ){
+    db.run(sqlUpdateQ, (err, resp) => {
+        rl.prompt();
     });
 }

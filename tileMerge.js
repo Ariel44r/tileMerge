@@ -22,6 +22,9 @@ rl.on('line', (line) => {
     case 'path':
       pathF();
       break;
+    case 'repeat':
+      repeatF();
+      break;
     case 'merge':
       overlayF();
       break;
@@ -64,4 +67,9 @@ function clearScreen() {
 function overlayF() {
   console.log('merging images!');
   overlay.overlay(path1, path2);
+}
+
+function repeatF() {
+  const queryRepeat = "select *, rowid from pathTiles where lote='lote1' and level_zoom='16' and dir_1='12196';";
+  sqlite.selectRepeatRows(queryRepeat);
 }
