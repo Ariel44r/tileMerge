@@ -30,10 +30,10 @@ exports.insertRecord = function(jsonArray){
 
 exports.query = function(callback){
     //Perform SELECT Operation
-    var query = 'select * from pathTiles';
+    var query = 'select * from pathTiles where repeat <> 0;';
     db.all(query, function(err,rows){
         //rows contain values while errors, well you can figure out.
-        callback(rows[1000 - 1]);
+        callback(rows);
     });
 }
 
@@ -71,10 +71,8 @@ exports.selectRepeatRows = function(queryRepeatRows){
                         if(row.file_name == rows[i].file_name){
                             console.log(row.file_name + ' = ' + rows[i].file_name);
                             console.log(row.cuadrant + ' = ' + rows[i].cuadrant);
-                            var queryUpdate = `update pathTiles set repeat_flag=1 where rowid=${row.rowid} or rowid=${rows[i].rowid}`;
+                            var queryUpdate = `update pathTiles set repeat_flag=1, repeat=${countID} where rowid=${row.rowid} or rowid=${rows[i].rowid}`;
                             updateRecordSQL(queryUpdate);
-                            var queryUpdateIDRepeat = `update pathTiles set repeat=${countID} where rowid=${row.rowid} or rowid=${rows[i].rowid}`;
-                            updateRecordSQL(queryUpdateIDRepeat);
                             countID++;
                         }
                     }
