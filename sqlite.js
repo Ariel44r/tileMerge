@@ -22,7 +22,8 @@ exports.insertRecord = function(jsonArray){
         //console.log(sqlInsertQ);
         //db.run(sqlInsertQ);  //synchronous form
         db.run(sqlInsertQ, (err, resp) => {         //asynch form
-            console.log('insert all records success');
+            if(err){throw err}
+            console.log(`'${jsonArray[jsonArray.length-1].lote}' insert all records success`);
             rl.prompt();
         });      
     });
@@ -30,7 +31,7 @@ exports.insertRecord = function(jsonArray){
 
 exports.query = function(callback){
     //Perform SELECT Operation
-    var query = 'select * from pathTiles where repeat <> 0;';
+    var query = 'select * from pathTiles;';
     db.all(query, function(err,rows){
         //rows contain values while errors, well you can figure out.
         callback(rows);

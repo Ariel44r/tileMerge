@@ -63,10 +63,10 @@ function readPathDir(pathToRead,callback){
 }
 
 exports.readDir = function(pathDir) {
-  var jsonArray = [];                                                    
   path.mainPath(pathDir);//root_dir
   var lotes = readPathDirSync(pathDir);
   for(var i=0;i<lotes.length;i++){
+    var jsonArray = [];                                                    
     var pathToLote = pathDir + '/' + lotes[i];//lote
     if((fs.lstatSync(pathToLote).isDirectory()) && (lotes[i].charAt(0) != '.')){
       var cuadrants = readPathDirSync(pathToLote);
@@ -89,7 +89,7 @@ exports.readDir = function(pathDir) {
                       cuadrant: path.basename(pathToCuadrant),
                       level_zoom: path.basename(pathToLevel_Zoom),
                       dir_1: path.basename(pathToDir_1),
-                      file_name: pngs[m],
+                      file_name: pngs[m].replace('.png',''),
                       repeat: 0,
                       repeat_flag: 0
                     }
@@ -103,8 +103,8 @@ exports.readDir = function(pathDir) {
         }
       }
     }
+    sqlite.insertRecord(jsonArray);                                                          
   }
-  sqlite.insertRecord(jsonArray);                                                          
 }
 
 function readPathDirSync(pathToRead){

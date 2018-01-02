@@ -48,6 +48,9 @@ function sqliteF() {
   sqlite.createDBandTable();  
   sqlite.query((resp) => {
     console.log(resp);
+    /*resp.forEach(row => {
+      console.log(path.getFullPath(row));
+    });*/
     rl.prompt();
   });
 }
@@ -60,10 +63,6 @@ function pathF() {
   });
 }
 
-function clearScreen() {
-  console.clear();
-}
-
 function overlayF() {
   console.log('merging images!');
   overlay.overlay(path1, path2);
@@ -72,4 +71,8 @@ function overlayF() {
 function repeatF() {
   const queryRepeat = "select *, rowid from pathTiles where lote='lote1' and level_zoom='16' and dir_1='12196';";
   sqlite.selectRepeatRows(queryRepeat);
+}
+
+function clearScreen() {
+  console.clear();
 }
