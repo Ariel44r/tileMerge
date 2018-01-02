@@ -47,12 +47,12 @@ rl.on('line', (line) => {
 
 function sqliteF() {
   sqlite.createDBandTable();
-  var query = 'select * from pathTiles;';  
+  var query = 'select * from pathTiles where repeat<>0;';  
   sqlite.query(query, (resp) => {
-    console.log(resp);
-    /*resp.forEach(row => {
+    //console.log(resp);
+    resp.forEach(row => {
       console.log(path.getFullPath(row));
-    });*/
+    });
     rl.prompt();
   });
 }
@@ -77,27 +77,38 @@ function repeatF() {
     "select distinct dir_1 from pathTiles;"
   ];
   var rowsSQLite = {
-    0: [],
-    1: [],
-    2: []
-  };var counter = 0;
-  for(var i=0;i<queries.length;i++){
-    sqlite.query(queries[i], (rows) => {
-      rowsSQLite.i = rows;
-      console.log(counter);
-      if(counter == 2){
-        console.log(counter);
-        //here call another function
-      }
-      counter++;
-    });
-  }
+    lote: [],
+    level_zoom: [],
+    dir_1: []
+  };
+  var counter = 0;
+  sqlite.query(queries[0], (rows) => {
+    rowsSQLite.lote = rows;
+  });
+  sqlite.query(queries[1], (rows) => {
+    rowsSQLite.level_zoom = rows;
+  });
+  sqlite.query(queries[2], (rows) => {
+    rowsSQLite.dir_1 = rows;
+    callRepeatSQLite(rowsSQLite);
+  });
+  
   /*const queryRepeat = "select *, rowid from pathTiles where lote='lote1' and level_zoom='16' and dir_1='12196';";
   sqlite.selectRepeatRows(queryRepeat);*/
 }
 
 function callRepeatSQLite(rowsSQLite){
-  
+  for(var x=0;x<rowsSQLite.lote.length;x++){
+    console.log(rowsSQLite.lote[x].lote);
+    for(var y=0;y<rowsSQLite.level_zoom.length;y++){
+      console.log(rowsSQLite.level_zoom[y].level_zoom);
+      for(var z=0;z<rowsSQLite.dir_1.length;z++){
+        console.log(rowsSQLite.dir_1[z].dir_1);
+          const queryRepeat = `select *, rowid from pathTiles where lote='${rowsSQLite.lote[x].lote}' and level_zoom='${rowsSQLite.level_zoom[y].level_zoom}' and dir_1='${rowsSQLite.dir_1[z].dir_1}';`;
+          sqlite.selectRepeatRows(queryRepeat);
+        }
+    }
+  }
 }
 
 function clearScreen() {
