@@ -1,5 +1,5 @@
 const readLine = require('readline'),
-      path = require('./path.js'),
+      pathVar = require('./path.js'),
       readDir = require('./readDir.js'),
       overlay = require('./overlay.js'),
       sqlite = require('./sqlite.js'),
@@ -10,8 +10,8 @@ const readLine = require('readline'),
         prompt: 'tileMerge > '
       });
 
-var path1 = path.getPath('tiles') + '/tiles1/0/1669.png';
-var path2 = path.getPath('tiles') + '/tiles2/0/1669.png';
+var path1 = pathVar.getPath('tiles') + '/tiles1/0/1669.png';
+var path2 = pathVar.getPath('tiles') + '/tiles2/0/1669.png';
 
 rl.prompt();
 

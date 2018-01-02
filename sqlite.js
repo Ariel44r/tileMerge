@@ -7,10 +7,8 @@ var sqlite3 = require('sqlite3').verbose(),
 
 exports.createDBandTable = function(){
     const dbPath = path.getPath('') + '/database.db';
-<<<<<<< HEAD
-    console.log(dbPath);
-=======
->>>>>>> workspaceRootDevelopment
+
+    console.log(dbPath)
     if(fs.existsSync(dbPath)) {
       console.log('database.db was created before');
     } else {
