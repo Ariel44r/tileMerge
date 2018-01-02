@@ -3,6 +3,7 @@ const readLine = require('readline'),
       readDir = require('./readDir.js'),
       overlay = require('./overlay.js'),
       sqlite = require('./sqlite.js'),
+      path = require('./path.js'),
       rl = readLine.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -21,6 +22,9 @@ rl.on('line', (line) => {
       break;
     case 'path':
       pathF();
+      break;
+    case 'repeat':
+      repeatF();
       break;
     case 'merge':
       overlayF();
@@ -45,6 +49,9 @@ function sqliteF() {
   sqlite.createDBandTable();  
   sqlite.query((resp) => {
     console.log(resp);
+    /*resp.forEach(row => {
+      console.log(path.getFullPath(row));
+    });*/
     rl.prompt();
   });
 }
@@ -57,11 +64,16 @@ function pathF() {
   });
 }
 
-function clearScreen() {
-  console.clear();
-}
-
 function overlayF() {
   console.log('merging images!');
   overlay.overlay(path1, path2);
+}
+
+function repeatF() {
+  const queryRepeat = "select *, rowid from pathTiles where lote='lote1' and level_zoom='16' and dir_1='12196';";
+  sqlite.selectRepeatRows(queryRepeat);
+}
+
+function clearScreen() {
+  console.clear();
 }

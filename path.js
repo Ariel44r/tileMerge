@@ -1,10 +1,9 @@
 const path = require('path'),
       fs = require('fs');
-var mainPath,
-    tmpPath;
+var mainPath;
+
 exports.mainPath = function(_mainPath) {
     mainPath = _mainPath;
-    tmpPath = _mainPath;
 }
 
 exports.getPath = function(fileName) {
@@ -17,4 +16,8 @@ exports.getMainPath = function() {
 
 exports.basename = function(fileName) {
     return (path.basename(fileName));
+}
+
+exports.getFullPath = function(sqlObject){
+    return(`${sqlObject.root_dir}/${sqlObject.lote}/${sqlObject.cuadrant}/${sqlObject.level_zoom}/${sqlObject.dir_1}/${sqlObject.file_name}.png`);
 }

@@ -7,7 +7,10 @@ var sqlite3 = require('sqlite3').verbose(),
 
 exports.createDBandTable = function(){
     const dbPath = path.getPath('') + '/database.db';
+<<<<<<< HEAD
     console.log(dbPath);
+=======
+>>>>>>> workspaceRootDevelopment
     if(fs.existsSync(dbPath)) {
       console.log('database.db was created before');
     } else {
@@ -23,7 +26,8 @@ exports.insertRecord = function(jsonArray){
         //console.log(sqlInsertQ);
         //db.run(sqlInsertQ);  //synchronous form
         db.run(sqlInsertQ, (err, resp) => {         //asynch form
-            console.log('insert all records success');
+            if(err){throw err}
+            console.log(`'${jsonArray[jsonArray.length-1].lote}' insert all records success`);
             rl.prompt();
         });      
     });
@@ -31,7 +35,7 @@ exports.insertRecord = function(jsonArray){
 
 exports.query = function(callback){
     //Perform SELECT Operation
-    var query = 'select * from pathTiles';
+    var query = 'select * from pathTiles;';
     db.all(query, function(err,rows){
         //rows contain values while errors, well you can figure out.
         callback(rows);
@@ -55,7 +59,36 @@ function buildSQLinsert(jsonArray_, callback){
             //console.log(sql);
             callback(sql);
         } else{
-            sql = sql + `('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}',0,0),`;            
+            sql = sql + `('${element.root_dir}','${element.lote}','${element.cuadrant}','${element.level_zoom}','${element.dir_1}','${element.file_name}',0,0),`;
         }
+    });
+}
+
+exports.selectRepeatRows = function(queryRepeatRows){
+    db.all(queryRepeatRows, (err, rows) => {
+        if (err) {
+            throw err;
+        } else {
+            var countID = 0;
+            rows.forEach(row => {
+                for(var i=0;i<rows.length;i++){
+                    if(row != rows[i]){
+                        if(row.file_name == rows[i].file_name){
+                            console.log(row.file_name + ' = ' + rows[i].file_name);
+                            console.log(row.cuadrant + ' = ' + rows[i].cuadrant);
+                            var queryUpdate = `update pathTiles set repeat_flag=1, repeat=${countID} where rowid=${row.rowid} or rowid=${rows[i].rowid}`;
+                            updateRecordSQL(queryUpdate);
+                            countID++;
+                        }
+                    }
+                }
+            });
+        }
+    });
+}
+
+function updateRecordSQL(sqlUpdateQ){
+    db.run(sqlUpdateQ, (err, resp) => {
+        rl.prompt();
     });
 }
