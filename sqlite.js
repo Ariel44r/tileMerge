@@ -31,9 +31,8 @@ exports.insertRecord = function(jsonArray){
     });
 }
 
-exports.query = function(callback){
+exports.query = function(query, callback){
     //Perform SELECT Operation
-    var query = 'select * from pathTiles;';
     db.all(query, function(err,rows){
         //rows contain values while errors, well you can figure out.
         callback(rows);

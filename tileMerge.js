@@ -46,8 +46,9 @@ rl.on('line', (line) => {
 });
 
 function sqliteF() {
-  sqlite.createDBandTable();  
-  sqlite.query((resp) => {
+  sqlite.createDBandTable();
+  var query = 'select * from pathTiles;';  
+  sqlite.query(query, (resp) => {
     console.log(resp);
     /*resp.forEach(row => {
       console.log(path.getFullPath(row));
@@ -70,8 +71,33 @@ function overlayF() {
 }
 
 function repeatF() {
-  const queryRepeat = "select *, rowid from pathTiles where lote='lote1' and level_zoom='16' and dir_1='12196';";
-  sqlite.selectRepeatRows(queryRepeat);
+  const queries = [
+    "select distinct lote from pathTiles;",
+    "select distinct level_zoom from pathTiles;",
+    "select distinct dir_1 from pathTiles;"
+  ];
+  var rowsSQLite = {
+    0: [],
+    1: [],
+    2: []
+  };var counter = 0;
+  for(var i=0;i<queries.length;i++){
+    sqlite.query(queries[i], (rows) => {
+      rowsSQLite.i = rows;
+      console.log(counter);
+      if(counter == 2){
+        console.log(counter);
+        //here call another function
+      }
+      counter++;
+    });
+  }
+  /*const queryRepeat = "select *, rowid from pathTiles where lote='lote1' and level_zoom='16' and dir_1='12196';";
+  sqlite.selectRepeatRows(queryRepeat);*/
+}
+
+function callRepeatSQLite(rowsSQLite){
+  
 }
 
 function clearScreen() {
