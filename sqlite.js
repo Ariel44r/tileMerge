@@ -39,9 +39,9 @@ exports.query = function(query, callback){
     });
 }
 
-exports.randomStringVal = function(callback) {
+function randomStringVal(callback) {
     callback(randomString.generate({
-        length: '16',
+        length: '8',
         charset: 'numeric'
     }));
 }
@@ -66,16 +66,15 @@ exports.selectRepeatRows = function(queryRepeatRows){
         if (err) {
             throw err;
         } else {
-            var countID = 0;
             rows.forEach(row => {
                 for(var i=0;i<rows.length;i++){
                     if(row != rows[i]){
                         if(row.file_name == rows[i].file_name){
-                            console.log(row.file_name + ' = ' + rows[i].file_name);
-                            console.log(row.cuadrant + ' = ' + rows[i].cuadrant);
-                            var queryUpdate = `update pathTiles set repeat_flag=1, repeat=${countID} where rowid=${row.rowid} or rowid=${rows[i].rowid}`;
-                            updateRecordSQL(queryUpdate);
-                            countID++;
+                            randomStringVal((rndmString) => {
+                                console.log(rndmString);
+                                var queryUpdate = `update pathTiles set repeat_flag=1, repeat=${rndmString} where rowid=${row.rowid} or rowid=${rows[i].rowid}`;
+                                updateRecordSQL(queryUpdate);
+                            });
                         }
                     }
                 }

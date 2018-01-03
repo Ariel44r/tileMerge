@@ -10,10 +10,10 @@ const readLine = require('readline'),
         prompt: 'tileMerge > '
       });
 
-//var path1 = pathVar.getPath('tiles') + '/tiles1/0/1669.png';
-//var path2 = pathVar.getPath('tiles') + '/tiles2/0/1669.png';
-var path1 = '/Users/aramirez/Desktop/rootDir/lote4/11020447/16/14563/28953.png';
-var path2 = '/Users/aramirez/Desktop/rootDir/lote4/11020448/16/14563/28953.png';
+var path1 = pathVar.getPath('tiles') + '/tiles1/0/1669.png';
+var path2 = pathVar.getPath('tiles') + '/tiles2/0/1669.png';
+//var path1 = '/Users/aramirez/Desktop/rootDir/lote4/11020447/16/14563/28953.png';
+//var path2 = '/Users/aramirez/Desktop/rootDir/lote4/11020448/16/14563/28953.png';
 sqlite.createDBandTable();
 
 rl.prompt();
@@ -72,7 +72,7 @@ function pathF() {
 
 function overlayF() {
   console.log('merging images!');
-  overlay.overlay(path1, path2);
+  overlay.overlay(path1, path2, 'output');
 }
 
 function repeatF() {
@@ -101,7 +101,7 @@ function repeatF() {
 
 function callRepeatSQLite(rowsSQLite){
   for(var x=0;x<rowsSQLite.lote.length;x++){
-    //console.log(rowsSQLite.lote[x].lote);
+    console.log(rowsSQLite.lote[x].lote);
     for(var y=0;y<rowsSQLite.level_zoom.length;y++){
       //console.log(rowsSQLite.level_zoom[y].level_zoom);
       for(var z=0;z<rowsSQLite.dir_1.length;z++){
@@ -117,7 +117,12 @@ function getRepeatPathsF(){
   const queryRepeatPaths = 'select * from pathTiles where repeat_flag=1;';
   sqlite.query(queryRepeatPaths, (rowsRepeat) => {
     rowsRepeat.forEach(row => {
-      console.log(path.getFullPath(row));
+      rowsRepeat.forEach(row2 => {
+        if(row.repeat == row2.repeat && row.cuadrant != row2.cuadrant){
+          overlay.overlay(path.getFullPath(row), path.getFullPath(row2),row.file_name);
+        }
+      });
+      //console.log(path.getFullPath(row));
     });
     rl.prompt();
   });
