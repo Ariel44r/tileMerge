@@ -4,14 +4,15 @@ const readLine = require('readline'),
       overlay = require('./overlay.js'),
       sqlite = require('./sqlite.js'),
       path = require('./path.js'),
+      fs = require('fs');
       rl = readLine.createInterface({
         input: process.stdin,
         output: process.stdout,
         prompt: 'tileMerge > '
       });
 
-var path1 = pathVar.getPath('tiles') + '/tiles1/0/1669.png';
-var path2 = pathVar.getPath('tiles') + '/tiles2/0/1669.png';
+var path1 = pathVar.getPath('tiles.1') + '/tiles1/0/1669.png';
+var path2 = pathVar.getPath('tiles.1') + '/tiles2/0/1669.png';
 //var path1 = '/Users/aramirez/Desktop/rootDir/lote4/11020447/16/14563/28953.png';
 //var path2 = '/Users/aramirez/Desktop/rootDir/lote4/11020448/16/14563/28953.png';
 sqlite.createDBandTable();
@@ -72,7 +73,17 @@ function pathF() {
 
 function overlayF() {
   console.log('merging images!');
-  overlay.overlay(path1, path2, 'output');
+  overlay.overlayTest(path1, path2, (oldPath) => {
+    if(oldPath != false){
+      fs.unlinkSync(path1);
+      fs.unlinkSync(path2);
+      fs.rename(oldPath,path1, (err) => {
+        if(err){
+          console.log(err);
+        }
+      });
+    }
+  });
 }
 
 function repeatF() {
@@ -119,7 +130,19 @@ function getRepeatPathsF(){
     rowsRepeat.forEach(row => {
       rowsRepeat.forEach(row2 => {
         if(row.repeat == row2.repeat && row.cuadrant != row2.cuadrant){
-          overlay.overlay(path.getFullPath(row), path.getFullPath(row2),row.file_name);
+          overlay.overlayTest(path.getFullPath(row), path.getFullPath(row2), (oldPath) => {
+            if(oldPath != false){
+              fs.unlinkSync(path.getFullPath(row));
+              fs.unlinkSync(path.getFullPath(row2));
+              fs.rename(oldPath,path.getFullPath(row), (err) => {
+                if(err){
+                  console.log(err);
+                } else {
+                  console.log(path.getFullPath(row));
+                }
+              });
+            }
+          });
         }
       });
       //console.log(path.getFullPath(row));
