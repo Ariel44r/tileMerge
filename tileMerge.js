@@ -75,8 +75,8 @@ function overlayF() {
   console.log('merging images!');
   overlay.overlayTest(path1, path2, (oldPath) => {
     if(oldPath != false){
-      fs.unlinkSync(path1);
-      fs.unlinkSync(path2);
+      unlinkFile(path1);
+      unlinkFile(path2);
       fs.rename(oldPath,path1, (err) => {
         if(err){
           console.log(err);
@@ -129,18 +129,14 @@ function getRepeatPathsF(){
   sqlite.query(queryRepeatPaths, (rowsRepeat) => {
     rowsRepeat.forEach(row => {
       rowsRepeat.forEach(row2 => {
-        if(row.repeat == row2.repeat && row.cuadrant != row2.cuadrant){
-          overlay.overlayTest(path.getFullPath(row), path.getFullPath(row2), (oldPath) => {
+        if(row.repeat == row2.repeat && row.cuadrant != row2.cuadrant && row.level_zoom == row2.level_zoom){
+          overlay.overlay(path.getFullPath(row), path.getFullPath(row2), (oldPath) => {
             if(oldPath != false){
-              fs.unlinkSync(path.getFullPath(row));
-              fs.unlinkSync(path.getFullPath(row2));
-              fs.rename(oldPath,path.getFullPath(row), (err) => {
-                if(err){
-                  console.log(err);
-                } else {
-                  console.log(path.getFullPath(row));
-                }
-              });
+              unlinkFile(path.getFullPath(row));
+              unlinkFile(path.getFullPath(row2));
+              if(fs.existsSync(oldPath)){
+                renameFile(oldPath,path.getFullPath(row));
+              }
             }
           });
         }
@@ -149,6 +145,33 @@ function getRepeatPathsF(){
     });
     rl.prompt();
   });
+}
+
+function unlinkFile(unlinkPath){
+  if(fs.existsSync(unlinkPath)){
+    fs.unlinkSync(unlinkPath);
+  } else {
+    console.log(`\nunlinkFile '${unlinkPath}' not exists!\n`);
+  }
+}
+
+function renameFile(oldPath, newPath){
+  if(fs.existsSync(oldPath)){
+    if(!fs.existsSync(newPath)){
+      fs.createReadStream(oldPath).pipe(fs.createWriteStream(newPath));
+      /*fs.rename(oldPath, newPath, (err) => {
+        if(err){
+          console.log(err);
+          console.log('holaMamá');
+        } else {
+          console.log(`RENAME ${newPath}`);
+        }
+      });*/
+    } else{
+      unlinkFile(newPath);
+      renameFile(oldPath,newPath);
+    }
+  }
 }
 
 function clearScreen() {
