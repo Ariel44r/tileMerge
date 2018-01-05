@@ -111,8 +111,9 @@ function repeatF() {
 }
 
 function callRepeatSQLite(rowsSQLite){
+  console.log('Start find repeat tiles ...');
   for(var x=0;x<rowsSQLite.lote.length;x++){
-    console.log(rowsSQLite.lote[x].lote);
+    //console.log(rowsSQLite.lote[x].lote);
     for(var y=0;y<rowsSQLite.level_zoom.length;y++){
       //console.log(rowsSQLite.level_zoom[y].level_zoom);
       for(var z=0;z<rowsSQLite.dir_1.length;z++){
@@ -132,16 +133,19 @@ function getRepeatPathsF(){
         if(row.repeat == row2.repeat && row.cuadrant != row2.cuadrant && row.level_zoom == row2.level_zoom){
           overlay.overlay(path.getFullPath(row), path.getFullPath(row2), (oldPath) => {
             if(oldPath != false){
-              unlinkFile(path.getFullPath(row));
-              unlinkFile(path.getFullPath(row2));
-              if(fs.existsSync(oldPath)){
-                renameFile(oldPath,path.getFullPath(row));
-              }
+              //unlinkFile(path.getFullPath(row));
+              var pathArray = [oldPath,path.getFullPath(row)];
+              renameFile(pathArray, (isRename) => {
+                if(isRename){
+                  console.log(`RENAME ${pathArray[1]}`);                  
+                  unlinkFile(path.getFullPath(row2)); 
+                  unlinkFile(pathArray[0]);                   
+                }
+              });
             }
           });
         }
       });
-      //console.log(path.getFullPath(row));
     });
     rl.prompt();
   });
@@ -151,25 +155,26 @@ function unlinkFile(unlinkPath){
   if(fs.existsSync(unlinkPath)){
     fs.unlinkSync(unlinkPath);
   } else {
-    console.log(`\nunlinkFile '${unlinkPath}' not exists!\n`);
+    console.log(`\nunlinkFile: '${unlinkPath}' not exists!\n`);
   }
 }
 
-function renameFile(oldPath, newPath){
-  if(fs.existsSync(oldPath)){
-    if(!fs.existsSync(newPath)){
-      fs.createReadStream(oldPath).pipe(fs.createWriteStream(newPath));
+function renameFile(pathArray, callback){
+  if(fs.existsSync(pathArray[0])){
+    if(!fs.existsSync(pathArray[1])){
+      fs.createReadStream(pathArray[0]).pipe(fs.createWriteStream(pathArray[1])); //pipeunlink more items
+      callback(true);
       /*fs.rename(oldPath, newPath, (err) => {
         if(err){
           console.log(err);
-          console.log('holaMamá');
         } else {
           console.log(`RENAME ${newPath}`);
+          callback(true);
         }
       });*/
     } else{
-      unlinkFile(newPath);
-      renameFile(oldPath,newPath);
+      unlinkFile(pathArray[1]);
+      renameFile(pathArray[0],pathArray[1]);
     }
   }
 }
