@@ -15,7 +15,7 @@ exports.createDBandTable = function(){
       fs.openSync(dbPath, 'w');
       console.log('database.db is being created');
     }
-    const createTableSQL = 'CREATE TABLE IF NOT EXISTS pathTiles (root_dir varchar(255) NOT NULL,lote varchar(255),cuadrant varchar(255),level_zoom varchar(255),dir_1 varchar(255),file_name varchar(255),repeat integer,repeat_flag integer);'
+    const createTableSQL = 'CREATE TABLE IF NOT EXISTS pathTiles (root_dir varchar(255) NOT NULL,lote varchar(255),cuadrant varchar(255),level_zoom varchar(255),dir_1 varchar(255),file_name varchar(255),repeat integer,repeat_flag integer);';
     db.run(createTableSQL);
 }
 
@@ -71,7 +71,8 @@ exports.selectRepeatRows = function(queryRepeatRows){
                     if(row != rows[i]){
                         if(row.file_name == rows[i].file_name){
                             randomStringVal((rndmString) => {
-                                console.log(rndmString);
+                                console.log(rndmString + path.getFullPath(row));
+                                console.log(path.getFullPath(rows[i]));
                                 var queryUpdate = `update pathTiles set repeat_flag=1, repeat=${rndmString} where rowid=${row.rowid} or rowid=${rows[i].rowid}`;
                                 updateRecordSQL(queryUpdate);
                             });

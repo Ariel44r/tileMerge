@@ -36,6 +36,9 @@ rl.on('line', (line) => {
     case 'merge':
       getRepeatPathsF();
       break;
+    case 'get repeat':
+      getRepeatPathsAfterOverlay();
+      break;
     case 'clear':
       clearScreen();
       break;
@@ -56,6 +59,17 @@ function sqliteF() {
   var query = 'select * from pathTiles;';  
   sqlite.query(query, (resp) => {
     //console.log(resp);
+    resp.forEach(row => {
+      console.log(path.getFullPath(row));
+    });
+    rl.prompt();
+  });
+}
+
+function getRepeatPathsAfterOverlay() {
+  var query = 'select * from pathTiles where repeat<>0;';  
+  sqlite.query(query, (resp) => {
+    console.log(resp.length);
     resp.forEach(row => {
       console.log(path.getFullPath(row));
     });
@@ -133,13 +147,10 @@ function getRepeatPathsF(){
         if(row.repeat == row2.repeat && row.cuadrant != row2.cuadrant && row.level_zoom == row2.level_zoom){
           overlay.overlay(path.getFullPath(row), path.getFullPath(row2), (oldPath) => {
             if(oldPath != false){
-              //unlinkFile(path.getFullPath(row));
-              var pathArray = [oldPath,path.getFullPath(row)];
-              renameFile(pathArray, (isRename) => {
-                if(isRename){
-                  console.log(`RENAME ${pathArray[1]}`);                  
-                  unlinkFile(path.getFullPath(row2)); 
-                  unlinkFile(pathArray[0]);                   
+              var pathArray = [oldPath,path.getFullPath(row), path.getFullPath(row2)];
+              renameFile(pathArray, (isMerged) => {
+                if(isMerged){
+                  unlinkFile(pathArray[0]);
                 }
               });
             }
@@ -160,24 +171,31 @@ function unlinkFile(unlinkPath){
 }
 
 function renameFile(pathArray, callback){
+  unlinkFile(pathArray[1]);
+  //unlinkFile(pathArray[2]);
+  fs.readFile(pathArray[0], (err, data) => {
+    if(err){throw err}
+    if(data){
+      fs.writeFile(pathArray[1],data, (err) => {
+        console.log('writeFile: ' + pathArray[1]);
+        callback(true);
+      });
+    }
+  });
+}
+
+/*function renameFile(pathArray){
   if(fs.existsSync(pathArray[0])){
     if(!fs.existsSync(pathArray[1])){
+      unlinkFile(pathArray[2]);
+      console.log(`RENAME ${pathArray[1]}`);                   
       fs.createReadStream(pathArray[0]).pipe(fs.createWriteStream(pathArray[1])); //pipeunlink more items
-      callback(true);
-      /*fs.rename(oldPath, newPath, (err) => {
-        if(err){
-          console.log(err);
-        } else {
-          console.log(`RENAME ${newPath}`);
-          callback(true);
-        }
-      });*/
     } else{
       unlinkFile(pathArray[1]);
       renameFile(pathArray[0],pathArray[1]);
     }
   }
-}
+}*/
 
 function clearScreen() {
   console.clear();
