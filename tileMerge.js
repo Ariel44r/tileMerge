@@ -24,6 +24,9 @@ rl.on('line', (line) => {
     case 'sqlite':
       sqliteF();
       break;
+    case 'query repeat':
+      sqliteQueryR();
+      break;
     case 'path':
       pathF();
       break;
@@ -62,6 +65,18 @@ function sqliteF() {
     resp.forEach(row => {
       console.log(path.getFullPath(row));
     });
+    rl.prompt();
+  });
+}
+
+function sqliteQueryR(){
+  var queryR = 'select *, count(*) from pathTiles group by file_name, level_zoom, dir_1 having count(*) > 1;';
+  sqlite.query(queryR, (resp) => {
+    resp.forEach(row => {
+      //console.log(row);
+      console.log(path.getFullPath(row));
+    });
+    console.log('\n\n' + resp.length + '\n\n')
     rl.prompt();
   });
 }
