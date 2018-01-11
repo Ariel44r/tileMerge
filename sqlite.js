@@ -89,3 +89,33 @@ function updateRecordSQL(sqlUpdateQ){
         rl.prompt();
     });
 }
+
+exports.updateRecord = function(jsonArray){
+    buildSQLUpdate(jsonArray, (sqlUpdateQ) => {
+        //console.log(sqlUpdateQ);
+        //console.log(jsonArray.length);
+        db.run(sqlUpdateQ, (err, resp) => {
+            if(err) {throw err}
+            else {
+                console.log(`Update ${jsonArray.length} elements success!`);
+                console.log(resp);
+            }
+            rl.prompt();
+        }); 
+    });
+}
+
+function buildSQLUpdate(jsonArray_, callback){
+    var sql = `update pathTiles set repeat_flag=1 where `;
+    var counter = 0;
+    jsonArray_.forEach(element => {
+        counter++;
+        if (counter == jsonArray_.length){
+            sql = sql +`(file_name='${element.file_name}' and level_zoom='${element.level_zoom}' and dir_1='${element.dir_1}');`;
+            //console.log(sql);
+            callback(sql);
+        } else{
+            sql = sql + `(file_name='${element.file_name}' and level_zoom='${element.level_zoom}' and dir_1='${element.dir_1}') or `;
+        }
+    });
+}

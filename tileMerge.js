@@ -24,6 +24,9 @@ rl.on('line', (line) => {
     case 'sqlite':
       sqliteF();
       break;
+    case 'query repeat':
+      sqliteQueryR();
+      break;
     case 'path':
       pathF();
       break;
@@ -66,8 +69,21 @@ function sqliteF() {
   });
 }
 
+function sqliteQueryR(){
+  var queryR = 'select *, count(*) from pathTiles group by file_name, level_zoom, dir_1 having count(*) > 1;';
+  sqlite.query(queryR, (resp) => {
+    sqlite.updateRecord(resp);
+    /*resp.forEach(row => {
+      //console.log(row);
+      console.log(path.getFullPath(row));
+    });*/
+    console.log('\n\n' + resp.length + '\n\n')
+    rl.prompt();
+  });
+}
+
 function getRepeatPathsAfterOverlay() {
-  var query = 'select * from pathTiles where repeat<>0;';  
+  var query = 'select * from pathTiles where repeat_flag=1;';  
   sqlite.query(query, (resp) => {
     console.log(resp.length);
     resp.forEach(row => {

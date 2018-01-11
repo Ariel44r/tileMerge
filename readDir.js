@@ -63,10 +63,11 @@ function readPathDir(pathToRead,callback){
 }
 
 exports.readDir = function(pathDir) {
+  var ObjectCounter = 0;
+  var jsonArray = [];
   path.mainPath(pathDir);//root_dir
   var lotes = readPathDirSync(pathDir);
   for(var i=0;i<lotes.length;i++){
-    var jsonArray = [];                                                    
     var pathToLote = pathDir + '/' + lotes[i];//lote
     if((fs.lstatSync(pathToLote).isDirectory()) && (lotes[i].charAt(0) != '.')){
       var cuadrants = readPathDirSync(pathToLote);
@@ -94,7 +95,19 @@ exports.readDir = function(pathDir) {
                       repeat_flag: 0
                     }
                     //call SQLite method
-                    jsonArray.push(fullPathObj);
+                    if(ObjectCounter < 48000){
+                      jsonArray.push(fullPathObj);
+                      ObjectCounter++;
+                    } else{
+                      jsonArray.push(fullPathObj);
+                      sqlite.insertRecord(jsonArray);
+                      console.log(ObjectCounter);
+                      console.log(jsonArray.length);
+                      ObjectCounter = 0;
+                      jsonArray = [];
+                      console.log('Array: ' + jsonArray.length);
+                      console.log('objectCounter: ' + ObjectCounter);
+                    }
                   }
                 } 
               }
@@ -103,8 +116,9 @@ exports.readDir = function(pathDir) {
         }
       }
     }
-    sqlite.insertRecord(jsonArray);                                                          
   }
+  sqlite.insertRecord(jsonArray);
+  console.log('Array: ' + jsonArray.length);
 }
 
 function readPathDirSync(pathToRead){
