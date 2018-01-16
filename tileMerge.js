@@ -58,6 +58,7 @@ rl.on('line', (line) => {
   process.exit(0);
 });
 
+//query: select * from table_name
 function sqliteF() {
   var query = 'select * from pathTiles;';  
   sqlite.query(query, (resp) => {
@@ -73,10 +74,10 @@ function sqliteQueryR(){
   var queryR = 'select *, count(*) from pathTiles group by file_name, level_zoom, dir_1 having count(*) > 1;';
   sqlite.query(queryR, (resp) => {
     sqlite.updateRecord(resp);
-    /*resp.forEach(row => {
+    resp.forEach(row => {
       //console.log(row);
       console.log(path.getFullPath(row));
-    });*/
+    });
     console.log('\n\n' + resp.length + '\n\n')
     rl.prompt();
   });
@@ -160,7 +161,7 @@ function getRepeatPathsF(){
   sqlite.query(queryRepeatPaths, (rowsRepeat) => {
     rowsRepeat.forEach(row => {
       rowsRepeat.forEach(row2 => {
-        if(row.repeat == row2.repeat && row.cuadrant != row2.cuadrant && row.level_zoom == row2.level_zoom){
+        if(row.cuadrant != row2.cuadrant && row.level_zoom == row2.level_zoom && row.dir_1 == row2.dir_1 && row.file_name == row2.file_name){
           overlay.overlay(path.getFullPath(row), path.getFullPath(row2), (oldPath) => {
             if(oldPath != false){
               var pathArray = [oldPath,path.getFullPath(row), path.getFullPath(row2)];
