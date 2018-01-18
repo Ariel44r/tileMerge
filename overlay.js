@@ -13,6 +13,8 @@ exports.overlayTest = function(path1, path2, callback) {
             .toFile(`testOverlay2/${path.basename(path1)}`, (err => {
               if(err == null){
                 callback(`testOverlay2/${path.basename(path1)}`);
+              } else {
+                console.log(err);
               }
             }))
           } else {

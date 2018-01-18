@@ -66,27 +66,37 @@ exports.selectRepeatRows = function(queryRepeatRows){
         if (err) {
             throw err;
         } else {
-            rows.forEach(row => {
+            for(var h=0;h<rows.length;h++){
                 for(var i=0;i<rows.length;i++){
-                    if(row != rows[i]){
-                        if(row.file_name == rows[i].file_name){
+                    console.log(path.getFullPath(rows[h]));
+                    console.log(path.getFullPath(rows[i]));
+                    console.log(rows[h]);
+                    console.log(rows[i]);
+                    console.log("\n");
+                    if(rows[h] != rows[i]){
+                        if(rows[h].file_name == rows[i].file_name){
                             randomStringVal((rndmString) => {
-                                console.log(rndmString + path.getFullPath(row));
+                                console.log(rndmString);
+                                console.log(path.getFullPath(rows[h]));
                                 console.log(path.getFullPath(rows[i]));
-                                var queryUpdate = `update pathTiles set repeat_flag=1, repeat=${rndmString} where rowid=${row.rowid} or rowid=${rows[i].rowid}`;
+                                var queryUpdate = `update pathTiles set repeat=${rndmString} where (repeat_flag=1 and file_name ='${rows[h].file_name}' and level_zoom='${rows[h].level_zoom}' and dir_1='${rows[h].dir_1}') or (repeat_flag=1 and file_name ='${rows[i].file_name}' and level_zoom='${rows[i].level_zoom}' and dir_1='${rows[i].dir_1}');`;
                                 updateRecordSQL(queryUpdate);
                             });
                         }
                     }
                 }
-            });
+            }
         }
     });
 }
 
 function updateRecordSQL(sqlUpdateQ){
     db.run(sqlUpdateQ, (err, resp) => {
-        rl.prompt();
+        if(err){throw err}
+        else{
+            console.log('insert success!');
+            rl.prompt();
+        }
     });
 }
 

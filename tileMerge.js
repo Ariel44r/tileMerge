@@ -37,7 +37,7 @@ rl.on('line', (line) => {
       overlayF();
       break;
     case 'merge':
-      getRepeatPathsF();
+      //getRepeatPathsF();
       break;
     case 'get repeat':
       getRepeatPathsAfterOverlay();
@@ -117,43 +117,19 @@ function overlayF() {
   });
 }
 
-function repeatF() {
-  const queries = [
-    "select distinct lote from pathTiles;",
-    "select distinct level_zoom from pathTiles;",
-    "select distinct dir_1 from pathTiles;"
-  ];
-  var rowsSQLite = {
-    lote: [],
-    level_zoom: [],
-    dir_1: []
-  };
-  var counter = 0;
-  sqlite.query(queries[0], (rows) => {
-    rowsSQLite.lote = rows;
+function repeatF(){
+  var query = 'select * from pathTiles where repeat_flag=1;';  
+  sqlite.query(query, (resp) => {
+    console.log(resp.length);
+    resp.forEach(row => {
+        if(row.file_name = row.file_name){
+          //const queryUpdateRepeat = `select *, rowid from pathTiles where lote='${row.lote}' and level_zoom='${row.level_zoom}' and dir_1='${row.dir_1}';`;
+          const queryUpdateRepeat = `select * from pathTiles where repeat_flag=1 and file_name ='${row.file_name}' and level_zoom='${row.level_zoom}' and dir_1='${row.dir_1}';`;
+          sqlite.selectRepeatRows(queryUpdateRepeat);
+        }
+    });
+    rl.prompt();
   });
-  sqlite.query(queries[1], (rows) => {
-    rowsSQLite.level_zoom = rows;
-  });
-  sqlite.query(queries[2], (rows) => {
-    rowsSQLite.dir_1 = rows;
-    callRepeatSQLite(rowsSQLite);
-  });
-}
-
-function callRepeatSQLite(rowsSQLite){
-  console.log('Start find repeat tiles ...');
-  for(var x=0;x<rowsSQLite.lote.length;x++){
-    //console.log(rowsSQLite.lote[x].lote);
-    for(var y=0;y<rowsSQLite.level_zoom.length;y++){
-      //console.log(rowsSQLite.level_zoom[y].level_zoom);
-      for(var z=0;z<rowsSQLite.dir_1.length;z++){
-        //console.log(rowsSQLite.dir_1[z].dir_1);
-        const queryRepeat = `select *, rowid from pathTiles where lote='${rowsSQLite.lote[x].lote}' and level_zoom='${rowsSQLite.level_zoom[y].level_zoom}' and dir_1='${rowsSQLite.dir_1[z].dir_1}';`;
-        sqlite.selectRepeatRows(queryRepeat);
-      }
-    }
-  }
 }
 
 function getRepeatPathsF(){
@@ -200,19 +176,6 @@ function renameFile(pathArray, callback){
     }
   });
 }
-
-/*function renameFile(pathArray){
-  if(fs.existsSync(pathArray[0])){
-    if(!fs.existsSync(pathArray[1])){
-      unlinkFile(pathArray[2]);
-      console.log(`RENAME ${pathArray[1]}`);                   
-      fs.createReadStream(pathArray[0]).pipe(fs.createWriteStream(pathArray[1])); //pipeunlink more items
-    } else{
-      unlinkFile(pathArray[1]);
-      renameFile(pathArray[0],pathArray[1]);
-    }
-  }
-}*/
 
 function clearScreen() {
   console.clear();
