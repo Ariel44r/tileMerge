@@ -95,7 +95,7 @@ exports.readDir = function(pathDir) {
                       repeat_flag: 0
                     }
                     //call SQLite method
-                    if(ObjectCounter < 48000){
+                    if(ObjectCounter < 50000){
                       jsonArray.push(fullPathObj);
                       ObjectCounter++;
                     } else{

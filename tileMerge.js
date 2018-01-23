@@ -39,7 +39,7 @@ rl.on('line', (line) => {
     case 'merge':
       //getRepeatPathsF();
       break;
-    case 'get repeat':
+    case 'getrepeat':
       getRepeatPathsAfterOverlay();
       break;
     case 'clear':
@@ -73,13 +73,23 @@ function sqliteF() {
 function sqliteQueryR(){
   var queryR = 'select *, count(*) from pathTiles group by file_name, level_zoom, dir_1 having count(*) > 1;';
   sqlite.query(queryR, (resp) => {
-    sqlite.updateRecord(resp);
+    var counter = 0;
+    var rowsToUpdate = [];
     resp.forEach(row => {
-      //console.log(row);
-      console.log(path.getFullPath(row));
+      rowsToUpdate.push(row);
+      counter++;
+      if(counter == 900){
+        console.log(counter + ' rows to update!');
+        sqlite.updateRecord(rowsToUpdate);
+        counter = 0;
+        rowsToUpdate = [];
+      }
     });
+    sqlite.updateRecord(rowsToUpdate);
+    console.log(rowsToUpdate.length + ' rows to update at last time');
     console.log('\n\n' + resp.length + '\n\n')
     rl.prompt();
+
   });
 }
 

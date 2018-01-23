@@ -35,7 +35,10 @@ exports.query = function(query, callback){
     //Perform SELECT Operation
     db.all(query, function(err,rows){
         //rows contain values while errors, well you can figure out.
-        callback(rows);
+        if(err){throw err}
+        else{
+            callback(rows);
+        }
     });
 }
 
@@ -68,8 +71,6 @@ exports.selectRepeatRows = function(queryRepeatRows){
         } else {
             for(var h=0;h<rows.length;h++){
                 for(var i=0;i<rows.length;i++){
-                    console.log(path.getFullPath(rows[h]));
-                    console.log(path.getFullPath(rows[i]));
                     console.log(rows[h]);
                     console.log(rows[i]);
                     console.log("\n");
@@ -91,7 +92,7 @@ exports.selectRepeatRows = function(queryRepeatRows){
 }
 
 function updateRecordSQL(sqlUpdateQ){
-    db.run(sqlUpdateQ, (err, resp) => {
+    db.run(sqlUpdateQ, (err) => {
         if(err){throw err}
         else{
             console.log('insert success!');
@@ -104,11 +105,10 @@ exports.updateRecord = function(jsonArray){
     buildSQLUpdate(jsonArray, (sqlUpdateQ) => {
         //console.log(sqlUpdateQ);
         //console.log(jsonArray.length);
-        db.run(sqlUpdateQ, (err, resp) => {
+        db.run(sqlUpdateQ, (err) => {
             if(err) {throw err}
             else {
                 console.log(`Update ${jsonArray.length} elements success!`);
-                console.log(resp);
             }
             rl.prompt();
         }); 
